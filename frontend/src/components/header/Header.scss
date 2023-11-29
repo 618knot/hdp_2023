@@ -1,0 +1,24 @@
+@import "../../Color.scss";
+
+header {
+    // レイアウト
+    display: flex;
+    width: 100%;
+    padding: 7px 40px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    box-sizing: border-box; /* padding分を含んで幅を100%にするため */
+    // position: fixed; /* ウィンドウを基準に画面に固定 */
+
+    // スタイル
+    border-radius: 0px 0px 10px 10px;
+    box-sizing:border-box;
+    background: $color-primary;
+
+    // タイポグラフィー
+    color: #FBFBFB;
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}

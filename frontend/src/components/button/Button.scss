@@ -1,0 +1,106 @@
+@import"../../Color.scss";
+
+.button {
+    // レイアウト
+    min-width: 140px;
+    min-height: 30px;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border: 0;
+
+    // スタイル
+    border-radius: 5px;
+
+    // タイポグラフィー
+    color: #FBFBFB;
+    // font-family: Kanit;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    font-size: 16px;
+}
+
+.primary {
+    background: $color-primary;
+    
+
+    &:hover {
+        background: #516dd4;
+    }
+
+    &:active {
+        background: #4158AA;
+    }
+
+    &:disabled {
+        // スタイル
+        border: 0.85px solid rgba(97, 132, 255, 0.70);
+        background: #B9B9B9;
+
+        // タイポグラフィー
+        color: #DDD;
+    }
+}
+
+.secondary {
+    background: $color-background;
+    color: $color-primary;
+    border: 0.85px solid $color-primary;
+
+    &:hover {
+        $color-seco-hov: #516DD4;
+
+        // スタイル
+        border: 0.85px solid $color-seco-hov;
+        background: rgba(97, 132, 255, 0.16);
+
+        // タイポグラフィー
+        color: $color-seco-hov;
+    }
+
+    &:active {
+        $color-seco-act: #4158AA;
+
+        // スタイル
+        border: 0.85px solid $color-seco-act;
+        background: rgba(97, 132, 255, 0.42);
+
+        // タイポグラフィー
+        color: $color-seco-act;
+    }
+
+    &:disabled {
+        $color-seco-dis: #B9B9B9;
+
+        // スタイル
+        border: 0.85px solid $color-seco-dis;
+        background: #FBFBFB;
+
+        // タイポグラフィー
+        color: $color-seco-dis;
+    }
+}
+
+.danger {
+    background: $color-danger;
+
+    &:hover {
+        background: #C95151;
+    }
+
+    &:active {
+        background: #BA4949;
+    }
+
+    &:disabled {
+        // スタイル
+        border: 0.85px solid rgba(255, 97, 97, 0.70);
+        background: #B9B9B9;
+
+        // タイポグラフィー
+        color: #DDD;
+    }
+}
