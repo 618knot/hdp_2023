@@ -1,0 +1,25 @@
+@import "../../Color.scss";
+
+select {
+    // レイアウト
+    min-width: 100px;
+    height: 30px;
+
+    // スタイル
+    border-radius: 3px;
+    border: 1px solid #686868;
+    background: $color-background;
+
+    // タイポグラフィー
+    font-size: 16px;
+
+    &:focus {
+        border: 1px solid $color-primary;
+        outline: 1px solid $color-primary;
+    }
+
+    &:disabled {
+        border: 1px solid #B9B9B9;
+        background: #F5F5F5;
+    }
+}

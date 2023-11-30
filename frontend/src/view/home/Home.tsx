@@ -30,7 +30,7 @@ const Home = () => {
     }
 
     return (
-        <>
+        <div className="Home">
             <div id="occupancy">
                 <span className="count">{count}</span>名在室
                 <Button
@@ -54,7 +54,7 @@ const Home = () => {
                     <td>不在</td>
                 </tr>
             </table>
-        </>
+        </div>
     );
 };
 

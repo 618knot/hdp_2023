@@ -4,6 +4,7 @@
 import { Route, Routes } from 'react-router-dom'
 import './App.scss'
 import Home from './view/home/Home'
+import History from './view/history/History'
 import Header from './components/header/Header'
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <Header />
       <Routes>
         <Route path='/' element={<Home/>} />
+        <Route path='/history' element={<History/>} />
       </Routes>
     </div>
   )

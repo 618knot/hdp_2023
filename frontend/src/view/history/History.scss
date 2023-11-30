@@ -1,0 +1,24 @@
+.History {
+
+
+    & .select {
+        text-align: left;
+    }
+
+    & td {
+        height: 40px;
+    }
+
+    & .time {
+        width: 200px;
+    }
+
+    & .status {
+        width: 80px;
+    }
+
+    & .name {
+        min-width: 80px;
+        max-width: 200px;
+    }
+}
