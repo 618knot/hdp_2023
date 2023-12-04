@@ -14,15 +14,18 @@ const ws: WebSocket = new WebSocket(WEBSOCKET_URL + "/ws/1");
 const Home = () => {
     const [count, setCount] = useState(0);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-          // WebSocketサーバーにリクエストを送信
-          ws.send("getWebSocketValue");
-        }, 3000);
     
-        // コンポーネントがアンマウントされたときにクリア
-        return () => clearInterval(intervalId);
+    useEffect(() => {
+        () => {
+            ws.send("getWebSocketValue");
+        }
+        // const intervalId = setInterval(() => {
+        //   // WebSocketサーバーにリクエストを送信
+        //   ws.send("getWebSocketValue");
+        // }, 3000);
+    
+        // // コンポーネントがアンマウントされたときにクリア
+        // return () => clearInterval(intervalId);
       }, []);
     
     ws.onmessage = (event) => {
