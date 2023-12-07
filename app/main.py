@@ -1,7 +1,7 @@
 from fastapi import FastAPI, WebSocket
 # from routers import users, sessions, rent_parking, reverse_geocoding, chat_rooms
 # from starlette.middleware.cors import CORSMiddleware
-
+import laboratory, user, being_status
 import os
 
 app = FastAPI()
@@ -37,4 +37,6 @@ async def websocket_endpoint(websocket: WebSocket, id: int):
 
         await websocket.send_text(f"{tmp}")
 
-# app.include_router(users.router)
+app.include_router(laboratory.router)
+app.include_router(user.router)
+app.include_router(being_status.router)
