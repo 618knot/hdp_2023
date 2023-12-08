@@ -1,7 +1,7 @@
 from fastapi import FastAPI, WebSocket
 # from routers import users, sessions, rent_parking, reverse_geocoding, chat_rooms
 # from starlette.middleware.cors import CORSMiddleware
-import laboratory, user, being_status
+import laboratory, user
 import os
 import datetime
 from typing import Optional
