@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CSSProperties, useEffect, useState } from "react";
 import "./Home.scss";
 import Button from "../../components/button/Button";
 import { useNavigate } from "react-router-dom";
+import axios from "../../util/axios_base";
 
 const buttonStyle: CSSProperties = {
     marginLeft: "65px",
@@ -11,27 +13,61 @@ const buttonStyle: CSSProperties = {
 const WEBSOCKET_URL = import.meta.env.VITE_WEBSOCKET_URL;
 const ws: WebSocket = new WebSocket(WEBSOCKET_URL + "/ws/1");
 
+const countStatus = (arr: Array<any>) => {
+    let tmp = 0;
+    for (const item of arr) {
+        console.log(item)
+        if(item["being"] === true) {
+            tmp++;
+        }
+    }
+
+    return tmp;
+}
+
+const convertStatus = (data: any) => {
+    if(data == true) {
+        return "在室";
+    } else if(data == false) {
+        return "不在";
+    } else {
+        return "-";
+    }
+}
+
+const convertStatus2Class = (data: any) => {
+    if(data == true) {
+        return "present";
+    } else if(data == false) {
+        return "absent";
+    } else {
+        return "";
+    }
+}
+
 const Home = () => {
     const [count, setCount] = useState(0);
+    const [data, setData] = useState([]);
     const navigate = useNavigate();
-    
     useEffect(() => {
-        () => {
-            ws.send("getWebSocketValue");
-        }
-        // const intervalId = setInterval(() => {
-        //   // WebSocketサーバーにリクエストを送信
-        //   ws.send("getWebSocketValue");
-        // }, 3000);
-    
-        // // コンポーネントがアンマウントされたときにクリア
-        // return () => clearInterval(intervalId);
+        axios.get("/status/1").then(
+            (response) => {                
+                const initialCount = countStatus(response.data["status"]);
+                setCount(initialCount);
+                setData(response.data["status"])
+            }
+        );
+        
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send("connect");
+          }
       }, []);
     
     ws.onmessage = (event) => {
-        setCount(event.data);
+        const jsonData = JSON.parse(event.data);
+        setData(jsonData["status"]);
+        setCount(countStatus(jsonData["status"]));
     }
-
     return (
         <div className="Home">
             <div id="occupancy">
@@ -44,18 +80,22 @@ const Home = () => {
                 />
             </div>
             <table>
-                <tr>
-                    <td>名前</td>
-                    <td>ステータス</td>
-                </tr>
-                <tr>
-                    <td>研究太郎</td>
-                    <td>在室</td>
-                </tr>
-                <tr>
-                    <td>研究次郎</td>
-                    <td>不在</td>
-                </tr>
+                <tbody>
+                    <tr>
+                        <td>名前</td>
+                        <td>ステータス</td>
+                    </tr>
+                    {
+                        data.map((item: any) => {
+                            return(
+                                <tr>
+                                    <td>{item["name"]}</td>
+                                    <td className={ convertStatus2Class(item["being"]) }>{ convertStatus(item["being"]) }</td>
+                                </tr>
+                            );
+                        })
+                    }
+                </tbody>
             </table>
         </div>
     );

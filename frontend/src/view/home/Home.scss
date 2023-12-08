@@ -15,4 +15,12 @@
         width: 200px;
         height: 40px;
     }
+
+    & .present {
+        color: rgb(0, 202, 0);
+    }
+
+    & .absent {
+        color: rgb(235, 57, 57)
+    }
 }
