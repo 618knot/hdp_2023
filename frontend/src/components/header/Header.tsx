@@ -24,7 +24,7 @@ const Header = () => {
     return(
         <header>
             <div className="name">
-                研究室
+                HOGE研究室
             </div>
             <div className="time">
                 {time}
