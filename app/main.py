@@ -1,6 +1,4 @@
 from fastapi import FastAPI, WebSocket
-# from routers import users, sessions, rent_parking, reverse_geocoding, chat_rooms
-# from starlette.middleware.cors import CORSMiddleware
 import laboratory, user
 import os
 import datetime
@@ -30,77 +28,47 @@ os.environ['UVICORN_CMD_SSL'] = '0'
 def startup_event() -> None:
     pass
 
-# @app.get("/")
-# async def hello() -> str:
-#     return "HELLO"
-
-# @app.websocket("/ws/{id}")
-# async def websocket_endpoint(websocket: WebSocket, id: int):
-#     await websocket.accept()
-#     tmp = 0
-#     while True:
-        
-#         await websocket.receive()
-
-#         tmp += 1
-
-#         await websocket.send_text(f"{tmp}")
-
 class ConnectionManager:
     def __init__(self):
-        self.active_connections = []
+        self.active_connections: dict[str, WebSocket] = {}
 
-    async def connect(self, websocket: WebSocket):
+    async def connect(self, websocket: WebSocket, id: int) -> None:
         await websocket.accept()
-        self.active_connections.append(websocket)
+        self.active_connections[str(id)] = websocket
 
-    def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
+    def disconnect(self, id: int) -> None:
+        self.active_connections.pop(str(id))
 
-    async def send_message(self, message: dict, websocket: WebSocket):
-        await websocket.send_json(message)
+    async def send_personal_message(self, message: dict, id: int) -> None:
+        await self.active_connections[str(id)].send_json(message)
 
 class BeingProps(BaseModel):
     user_id: int
 
 ws_manager = ConnectionManager()
-ws_connections = {}
 
 @app.post("/enter")
 async def enter(props: BeingProps) -> dict:
-    global ws_connections, ws_manager
     laboratory_id = session.query(User.laboratory_id).filter(User.id == props.user_id)
     being = BeingStatus(user_id=props.user_id, laboratory_id=laboratory_id, status=True)
     session.add(being)
     session.commit()
 
-    
-    print(ws_connections)
-    print("hoge")
-
-    if str(being.laboratory_id) in ws_connections.keys():
-        await ws_manager.send_message(get_being_status(being.laboratory_id), ws_connections[str(being.laboratory_id)])
+    if str(being.laboratory_id) in ws_manager.active_connections.keys():
+        await ws_manager.send_personal_message(get_being_status(being.laboratory_id), str(being.laboratory_id))
     
 
     return {"status": "ok"}
 
 @app.post("/leave")
 async def leave(props: BeingProps) -> dict:
-    global ws_connections, ws_manager
     laboratory_id = session.query(User.laboratory_id).filter(User.id == props.user_id)
     being = BeingStatus(user_id=props.user_id, laboratory_id=laboratory_id, status=False)
     session.add(being)
     session.commit()
 
-    print(ws_connections)
-    print(being.laboratory_id)
-    print(str(being.laboratory_id) in ws_connections.keys())
-    print("hoge")
-    
-    
-    if str(being.laboratory_id) in ws_connections.keys():
-        print("fuga")
-        await ws_manager.send_message(get_being_status(being.laboratory_id), ws_connections[str(being.laboratory_id)])
+    if str(being.laboratory_id) in ws_manager.active_connections.keys():
+        await ws_manager.send_personal_message(get_being_status(being.laboratory_id), str(being.laboratory_id))
 
     return {"status": "ok"}
 
@@ -109,8 +77,6 @@ async def show(user_id: int) -> dict:
     laboratory_id = session.query(User.laboratory_id).filter(User.id == user_id)
     history = session.query(BeingStatus.time, BeingStatus.status, User.name).join(User, BeingStatus.laboratory_id == User.laboratory_id).all()
 
-    # print(get_being_status(laboratory_id))
-    # response = get_being_status(laboratory_id)
     response = { "history": [] }
 
     for item in history:
@@ -128,10 +94,7 @@ async def being_status(laboratory_id: int) -> dict:
 
 @app.websocket("/ws/{id}")
 async def websocket_endpoint(websocket: WebSocket, id: int):
-    global ws_connections, ws_manager
-    ws_connections[str(id)] = websocket
-    print(ws_connections)
-    await ws_manager.connect(websocket)
+    await ws_manager.connect(websocket, id)
     
     try:
         while True:
@@ -139,8 +102,7 @@ async def websocket_endpoint(websocket: WebSocket, id: int):
     except:
         pass
     finally:
-        ws_manager.disconnect(websocket)
-        ws_connections.pop(str(id))
+        ws_manager.disconnect(websocket, id)
 
 def get_being_status(laboratory_id: int) -> dict:
     # laboratory_id = session.query(User.laboratory_id).filter(User.id == user_id)
