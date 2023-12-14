@@ -22,3 +22,13 @@ async def signup(props: UserProp) -> dict:
     session.commit()
 
     return {"status": "ok"}
+
+@router.get("/show/{laboratory_id}")
+async def show(laboratory_id: int) -> dict:
+    users = session.query(User.name).filter(User.laboratory_id == laboratory_id)
+
+    res_dict: [dict, list] = { "users": [] }
+    for user in users:
+        res_dict["users"].append(user.name)
+
+    return res_dict
