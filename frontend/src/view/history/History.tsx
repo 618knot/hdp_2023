@@ -6,12 +6,18 @@ import { useEffect, useState } from "react";
 const History = () => {
     const [data, setData] = useState([]);
     const [selectValue, setSelectValue] = useState("全員");
+    const [options, setOptions] = useState([]);
     
     useEffect(() => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         axios.get("/history/1").then(
             (response) => {
                 setData(response.data["history"]);
+            }
+        );
+        axios.get("/user/show/1").then(
+            (response) => {
+                setOptions(response.data["users"]);
             }
         );
     }, []);
@@ -23,7 +29,7 @@ const History = () => {
                 <PullDown
                     name="member"
                     options={
-                        ["全員", "研究 太郎", "研究 次郎"]
+                        ["全員"].concat(options)
                     }
                     value={selectValue}
                     setValue={ setSelectValue }
