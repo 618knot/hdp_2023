@@ -3,19 +3,22 @@ import "./PullDown.scss";
 type PullDownProps = {
     name: string;
     options: Array<string>;
+    value: string;
+    setValue: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const PullDown = (props: PullDownProps) => {
     return (
-        <>
-            <select name={props.name}>
-                {props.options.map((element) => (
-                    <option>
-                        {element}
-                    </option>
-                ))}
-            </select>
-        </>
+        <select value={ props.value } name={props.name} onChange={ (event) => {
+            console.log(event.target.value)
+            props.setValue(event.target.value);
+        } }>
+            {props.options.map((element) => (
+                <option value={element}>
+                    {element}
+                </option>
+            ))}
+        </select>
     );
 };
 
