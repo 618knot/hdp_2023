@@ -26,23 +26,13 @@ const countStatus = (arr: Array<any>) => {
     return tmp;
 }
 
-const convertStatus = (data: any) => {
+const convertStatus = (data: any, isClass: boolean) => {
     if(data == true) {
-        return "在室";
+        return isClass? "present" : "在室";
     } else if(data == false) {
-        return "不在";
+        return isClass? "absent" : "不在";
     } else {
-        return "-";
-    }
-}
-
-const convertStatus2Class = (data: any) => {
-    if(data == true) {
-        return "present";
-    } else if(data == false) {
-        return "absent";
-    } else {
-        return "";
+        return isClass? "" : "-";
     }
 }
 
@@ -94,7 +84,7 @@ const Home = () => {
                             return(
                                 <tr>
                                     <td>{item["name"]}</td>
-                                    <td className={ convertStatus2Class(item["being"]) }>{ convertStatus(item["being"]) }</td>
+                                    <td className={ convertStatus(item["being"], true) }>{ convertStatus(item["being"], false) }</td>
                                 </tr>
                             );
                         })
