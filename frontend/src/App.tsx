@@ -6,6 +6,7 @@ import './App.scss'
 import Home from './view/home/Home'
 import History from './view/history/History'
 import Header from './components/header/Header'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -13,6 +14,7 @@ function App() {
   return (
     <>
       <Header />
+      <ToastContainer />
       <div className='App'>
         <Routes>
           <Route path='/' element={<Home/>} />
