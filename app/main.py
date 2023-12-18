@@ -103,7 +103,7 @@ async def websocket_endpoint(websocket: WebSocket, id: int):
     except:
         pass
     finally:
-        ws_manager.disconnect(websocket, id)
+        ws_manager.disconnect(id)
 
 def get_being_status(laboratory_id: int) -> dict:
     # laboratory_id = session.query(User.laboratory_id).filter(User.id == user_id)
