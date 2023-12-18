@@ -75,13 +75,14 @@ async def leave(props: BeingProps) -> dict:
 @app.get("/history/{user_id}")
 async def show(user_id: int) -> dict:
     laboratory_id = session.query(User.laboratory_id).filter(User.id == user_id)
-    history = session.query(BeingStatus.time, BeingStatus.status, User.name).join(User, BeingStatus.laboratory_id == User.laboratory_id).all()
+    # history = session.query(BeingStatus.time, BeingStatus.status, User.name).join(User, BeingStatus.laboratory_id == User.laboratory_id).all()
+    history = session.query(BeingStatus.time, BeingStatus.status, User.name).join(User, (BeingStatus.user_id == User.id) & (BeingStatus.laboratory_id == User.laboratory_id)).all()
 
     response = { "history": [] }
 
     for item in history:
         response["history"].append({ 
-            "time": item[0].strftime("%Y/%m/%d %H:%m"),
+            "time": item[0].strftime("%Y/%m/%d %H:%M"),
              "status": item[1],
              "user": item[2]
               })
