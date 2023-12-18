@@ -2,6 +2,7 @@ import PullDown from "../../components/pulldown/PullDown";
 import "./History.scss";
 import axios from "../../util/axios_base";
 import { useEffect, useState } from "react";
+import { errorNotification } from "../../components/notice/notification";
 
 const History = () => {
     const [data, setData] = useState([]);
@@ -10,15 +11,25 @@ const History = () => {
     
     useEffect(() => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        axios.get("/history/1").then(
-            (response) => {
-                setData(response.data["history"]);
-            }
-        );
-        axios.get("/user/show/1").then(
-            (response) => {
-                setOptions(response.data["users"]);
-            }
+        new Promise((_resolve, reject) => {
+            axios.get("/history/1").then(
+                (response) => {
+                    setData(response.data["history"]);
+                },
+                () => {
+                    reject();
+                }
+            );
+            axios.get("/user/show/1").then(
+                (response) => {
+                    setOptions(response.data["users"]);
+                },
+                () => {
+                    reject();
+                }
+            );
+        }).catch(
+            () => { errorNotification("データの取得に失敗しました"); }
         );
     }, []);
 

@@ -4,6 +4,7 @@ import "./Home.scss";
 import Button from "../../components/button/Button";
 import { useNavigate } from "react-router-dom";
 import axios from "../../util/axios_base";
+import { errorNotification } from "../../components/notice/notification";
 
 const buttonStyle: CSSProperties = {
     marginLeft: "65px",
@@ -55,6 +56,9 @@ const Home = () => {
                 const initialCount = countStatus(response.data["status"]);
                 setCount(initialCount);
                 setData(response.data["status"])
+            },
+            () => {
+                errorNotification("データの取得に失敗しました");
             }
         );
         
