@@ -10,7 +10,6 @@ type PullDownProps = {
 const PullDown = (props: PullDownProps) => {
     return (
         <select value={ props.value } name={props.name} onChange={ (event) => {
-            console.log(event.target.value)
             props.setValue(event.target.value);
         } }>
             {props.options.map((element) => (

@@ -17,7 +17,6 @@ const ws: WebSocket = new WebSocket(WEBSOCKET_URL + "/ws/1");
 const countStatus = (arr: Array<any>) => {
     let tmp = 0;
     for (const item of arr) {
-        console.log(item)
         if(item["being"] === true) {
             tmp++;
         }
