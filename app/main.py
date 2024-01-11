@@ -47,10 +47,10 @@ class BeingProps(BaseModel):
 
 ws_manager = ConnectionManager()
 
-@app.post("/enter")
-async def enter(props: BeingProps) -> dict:
-    laboratory_id = session.query(User.laboratory_id).filter(User.id == props.user_id)
-    being = BeingStatus(user_id=props.user_id, laboratory_id=laboratory_id, status=True)
+@app.get("/enter/{user_id}")
+async def enter(user_id: int) -> dict:
+    laboratory_id = session.query(User.laboratory_id).filter(User.id == user_id)
+    being = BeingStatus(user_id=user_id, laboratory_id=laboratory_id, status=True)
     session.add(being)
     session.commit()
 
@@ -60,10 +60,10 @@ async def enter(props: BeingProps) -> dict:
 
     return {"status": "ok"}
 
-@app.post("/leave")
-async def leave(props: BeingProps) -> dict:
-    laboratory_id = session.query(User.laboratory_id).filter(User.id == props.user_id)
-    being = BeingStatus(user_id=props.user_id, laboratory_id=laboratory_id, status=False)
+@app.get("/leave/{user_id}")
+async def leave(user_id: int) -> dict:
+    laboratory_id = session.query(User.laboratory_id).filter(User.id == user_id)
+    being = BeingStatus(user_id=user_id, laboratory_id=laboratory_id, status=False)
     session.add(being)
     session.commit()
 
@@ -116,7 +116,8 @@ def get_being_status(laboratory_id: int) -> dict:
         if status:
             statuses["status"].append({
             "being": status[0],
-            "name": user[1]
+            "name": user[1],
+            "user_id": user[0] 
         })
         else:
             statuses["status"].append({
