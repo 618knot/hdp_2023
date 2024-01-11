@@ -21,8 +21,9 @@ header {
     font-weight: 500;
     line-height: normal;
 
-    // & .time {
-    //     font-family:monospace;
-    // }
     font-family:monospace;
+
+    & .lab-name {
+        cursor: pointer;
+    }
 }

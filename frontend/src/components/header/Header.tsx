@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import "./Header.scss";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
     const [time, setTime] = useState("");
     const [now, setNow] = useState(new Date());
+    const navigate = useNavigate();
     useEffect(() => {
         const timerId = setInterval(() => {
             setNow(new Date());
@@ -24,7 +26,9 @@ const Header = () => {
     return(
         <header>
             <div className="name">
-                HOGE研究室
+                <span className="lab-name" onClick={ () => navigate("/") }>
+                    HOGE研究室
+                </span>
             </div>
             <div className="time">
                 {time}
