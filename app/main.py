@@ -124,6 +124,7 @@ def get_being_status(laboratory_id: int) -> dict:
             statuses["status"].append({
             "being": "-",
             "name": user[1],
+            "student_number": user[2],
             "user_id": user[0]
         })
             
