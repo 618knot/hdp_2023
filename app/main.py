@@ -76,7 +76,7 @@ async def leave(user_id: int) -> dict:
 async def show(user_id: int) -> dict:
     laboratory_id = session.query(User.laboratory_id).filter(User.id == user_id)
     # history = session.query(BeingStatus.time, BeingStatus.status, User.name).join(User, BeingStatus.laboratory_id == User.laboratory_id).all()
-    history = session.query(BeingStatus.time, BeingStatus.status, User.name).join(User, (BeingStatus.user_id == User.id) & (BeingStatus.laboratory_id == User.laboratory_id)).order_by(BeingStatus.time).all()
+    history = session.query(BeingStatus.time, BeingStatus.status, User.name).join(User, (BeingStatus.user_id == User.id) & (BeingStatus.laboratory_id == User.laboratory_id)).order_by(desc(BeingStatus.time)).all()
 
     response = { "history": [] }
 
