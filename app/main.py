@@ -30,17 +30,25 @@ def startup_event() -> None:
 
 class ConnectionManager:
     def __init__(self):
-        self.active_connections: dict[str, WebSocket] = {}
+        self.active_connections: dict[dict] = {}
 
-    async def connect(self, websocket: WebSocket, id: int) -> None:
+    async def connect(self, websocket: WebSocket, laboratory_id: int, ws_id: int) -> None:
         await websocket.accept()
-        self.active_connections[str(id)] = websocket
 
-    def disconnect(self, id: int) -> None:
-        self.active_connections.pop(str(id))
+        self.active_connections[str(ws_id)] = {"websocket": websocket, "laboratory_id": laboratory_id}
 
-    async def send_personal_message(self, message: dict, id: int) -> None:
-        await self.active_connections[str(id)].send_json(message)
+    def disconnect(self, ws_id: int) -> None:
+        self.active_connections.pop(str(ws_id))
+
+    async def send_personal_message(self, message: dict, ws_id: int) -> None:
+        await self.active_connections[str(ws_id)].send_json(message)
+
+    async def send_laboratory_message(self, message: dict, laboratory_id: int) -> None:
+        for connection in self.active_connections:
+            if connection["laboratory_id"] == laboratory_id:
+                await connection["websocket"].send_json(message)
+
+
 
 class BeingProps(BaseModel):
     user_id: int
@@ -55,7 +63,7 @@ async def enter(user_id: int) -> dict:
     session.commit()
 
     if str(being.laboratory_id) in ws_manager.active_connections.keys():
-        await ws_manager.send_personal_message(get_being_status(being.laboratory_id), str(being.laboratory_id))
+        await ws_manager.send_laboratory_message(get_being_status(being.laboratory_id), str(being.laboratory_id))
     
 
     return {"status": "ok"}
@@ -68,7 +76,7 @@ async def leave(user_id: int) -> dict:
     session.commit()
 
     if str(being.laboratory_id) in ws_manager.active_connections.keys():
-        await ws_manager.send_personal_message(get_being_status(being.laboratory_id), str(being.laboratory_id))
+        await ws_manager.send_laboratory_message(get_being_status(being.laboratory_id), str(being.laboratory_id))
 
     return {"status": "ok"}
 
@@ -93,9 +101,9 @@ async def show(user_id: int) -> dict:
 async def being_status(laboratory_id: int) -> dict:
     return get_being_status(laboratory_id)
 
-@app.websocket("/ws/{id}")
-async def websocket_endpoint(websocket: WebSocket, id: int):
-    await ws_manager.connect(websocket, id)
+@app.websocket("/ws/{laboratory_id}/{ws_id}")
+async def websocket_endpoint(websocket: WebSocket, laboratory_id: int, ws_id: int):
+    await ws_manager.connect(websocket, laboratory_id, ws_id)
     
     try:
         while True:
@@ -103,7 +111,7 @@ async def websocket_endpoint(websocket: WebSocket, id: int):
     except:
         pass
     finally:
-        ws_manager.disconnect(id)
+        ws_manager.disconnect(ws_id)
 
 def get_being_status(laboratory_id: int) -> dict:
     # laboratory_id = session.query(User.laboratory_id).filter(User.id == user_id)

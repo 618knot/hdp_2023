@@ -8,11 +8,11 @@ import { errorNotification } from "../../components/notice/notification";
 
 const buttonStyle: CSSProperties = {
     marginLeft: "65px",
-
 };
 
 const WEBSOCKET_URL = import.meta.env.VITE_WEBSOCKET_URL;
-const ws: WebSocket = new WebSocket(WEBSOCKET_URL + "/ws/1");
+const wsID = Date.now();
+const ws: WebSocket = new WebSocket(`${WEBSOCKET_URL}/ws/1/${wsID}`);
 
 const countStatus = (arr: Array<any>) => {
     let tmp = 0;
