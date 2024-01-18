@@ -61,7 +61,7 @@ async def enter(user_id: int) -> dict:
     session.add(being)
     session.commit()
 
-    await ws_manager.send_laboratory_message(get_being_status(being.laboratory_id), str(being.laboratory_id), )    
+    await ws_manager.send_laboratory_message(get_being_status(being.laboratory_id), being.laboratory_id)    
 
     return {"status": "ok"}
 
@@ -72,7 +72,7 @@ async def leave(user_id: int) -> dict:
     session.add(being)
     session.commit()
 
-    await ws_manager.send_laboratory_message(get_being_status(being.laboratory_id), str(being.laboratory_id))
+    await ws_manager.send_laboratory_message(get_being_status(being.laboratory_id), being.laboratory_id)
 
     return {"status": "ok"}
 
