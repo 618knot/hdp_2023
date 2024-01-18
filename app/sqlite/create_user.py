@@ -21,5 +21,6 @@ class User(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     laboratory_id = Column(Integer, nullable=False) # 本当はlaboratoryの外部キー
     name = Column(String, nullable=False)
+    student_number = Column(String, nullable=False)
 
 Base.metadata.create_all(bind=engine)

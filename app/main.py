@@ -107,7 +107,7 @@ async def websocket_endpoint(websocket: WebSocket, id: int):
 
 def get_being_status(laboratory_id: int) -> dict:
     # laboratory_id = session.query(User.laboratory_id).filter(User.id == user_id)
-    users = session.query(User.id, User.name).filter(User.laboratory_id == laboratory_id)
+    users = session.query(User.id, User.name, User.student_number).filter(User.laboratory_id == laboratory_id)
 
     statuses = { "status": [] }
     for user in users:
@@ -117,6 +117,7 @@ def get_being_status(laboratory_id: int) -> dict:
             statuses["status"].append({
             "being": status[0],
             "name": user[1],
+            "student_number": user[2],
             "user_id": user[0] 
         })
         else:
