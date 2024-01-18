@@ -11,7 +11,7 @@ load_dotenv(dotenv_path)
 
 DB_NAME = os.environ.get("DB_NAME")
 
-engine = create_engine("sqlite:///" + DB_NAME, echo=True)
+engine = create_engine("sqlite:///" + DB_NAME, echo=False)
 
 Base = declarative_base()
 
