@@ -44,10 +44,9 @@ class ConnectionManager:
         await self.active_connections[str(ws_id)].send_json(message)
 
     async def send_laboratory_message(self, message: dict, laboratory_id: int) -> None:
-        for connection in self.active_connections:
+        for connection in self.active_connections.values():
             if connection["laboratory_id"] == laboratory_id:
                 await connection["websocket"].send_json(message)
-
 
 
 class BeingProps(BaseModel):
@@ -62,9 +61,7 @@ async def enter(user_id: int) -> dict:
     session.add(being)
     session.commit()
 
-    if str(being.laboratory_id) in ws_manager.active_connections.keys():
-        await ws_manager.send_laboratory_message(get_being_status(being.laboratory_id), str(being.laboratory_id))
-    
+    await ws_manager.send_laboratory_message(get_being_status(being.laboratory_id), str(being.laboratory_id), )    
 
     return {"status": "ok"}
 
@@ -75,8 +72,7 @@ async def leave(user_id: int) -> dict:
     session.add(being)
     session.commit()
 
-    if str(being.laboratory_id) in ws_manager.active_connections.keys():
-        await ws_manager.send_laboratory_message(get_being_status(being.laboratory_id), str(being.laboratory_id))
+    await ws_manager.send_laboratory_message(get_being_status(being.laboratory_id), str(being.laboratory_id))
 
     return {"status": "ok"}
 
