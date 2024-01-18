@@ -14,10 +14,11 @@ router: APIRouter = APIRouter(
 class UserProp(BaseModel):
     laboratory_id: int
     name: str
+    student_number: str
 
 @router.post("/signup")
 async def signup(props: UserProp) -> dict:
-    user = User(name=props.name, laboratory_id=props.laboratory_id)
+    user = User(name=props.name, laboratory_id=props.laboratory_id, student_number=props.student_number)
     session.add(user)
     session.commit()
 
